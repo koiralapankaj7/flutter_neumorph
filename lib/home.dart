@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_neumorph/neumorph.dart';
+import 'package:flutter_neumorph/neumorph_custom_painter.dart';
 import 'package:flutter_neumorph/neumorph_shape_widget.dart';
 
 class Home extends StatefulWidget {
@@ -184,7 +185,7 @@ class _HomeState extends State<Home> {
               onChanged: (double value) {
                 if (mounted) {
                   setState(() {
-                    this.intensity = double.parse(value.toStringAsFixed(2));
+                    this.intensity = double.parse(value.toStringAsFixed(1));
                   });
                 }
               },

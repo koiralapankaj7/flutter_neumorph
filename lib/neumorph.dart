@@ -37,8 +37,9 @@ class Neumorph extends StatelessWidget {
     //
 
     final HSLColor hsl = HSLColor.fromColor(this.color);
+
     final Color lightColor = hsl.withLightness((hsl.lightness * 1.20).clamp(0.0, 1.0)).toColor();
-    final Color darkColor = hsl.withLightness((hsl.lightness * 0.80).clamp(0.0, 1.0)).toColor();
+    final Color darkColor = hsl.withLightness((hsl.lightness * 0.90).clamp(0.0, 1.0)).toColor();
 
     return Container(
       height: this.height,
@@ -59,18 +60,31 @@ class Neumorph extends StatelessWidget {
                   color: lightColor.withOpacity(this.intensity),
                 ),
               ]
-            : [
-                BoxShadow(
-                  blurRadius: this.blur,
-                  offset: _getOffset(true),
-                  color: lightColor.withOpacity(this.intensity),
-                ),
-                BoxShadow(
-                  blurRadius: this.blur,
-                  offset: _getOffset(false),
-                  color: darkColor.withOpacity(this.intensity),
-                ),
-              ],
+            : this.shape == NeumorphShape.convex
+                ? [
+                    BoxShadow(
+                      blurRadius: this.blur,
+                      offset: _getOffset(true),
+                      color: hsl.withLightness((hsl.lightness * 1.10).clamp(0.0, 1.0)).toColor(),
+                    ),
+                    BoxShadow(
+                      blurRadius: this.blur,
+                      offset: _getOffset(false),
+                      color: hsl.withLightness((hsl.lightness * 0.90).clamp(0.0, 1.0)).toColor(),
+                    ),
+                  ]
+                : [
+                    BoxShadow(
+                      blurRadius: this.blur,
+                      offset: _getOffset(true),
+                      color: lightColor.withOpacity(this.intensity),
+                    ),
+                    BoxShadow(
+                      blurRadius: this.blur,
+                      offset: _getOffset(false),
+                      color: darkColor.withOpacity(this.intensity),
+                    ),
+                  ],
       ),
       child: this.child ?? Container(),
     );
@@ -78,7 +92,7 @@ class Neumorph extends StatelessWidget {
 
   Gradient _getColor(NeumorphShape shape) {
     final HSLColor hsl = HSLColor.fromColor(this.color);
-    final Color lightColor = hsl.withLightness((hsl.lightness * 1.10).clamp(0.0, 1.0)).toColor();
+    final Color lightColor = hsl.withLightness((hsl.lightness * 1.20).clamp(0.0, 1.0)).toColor();
     final Color darkColor = hsl.withLightness((hsl.lightness * 0.90).clamp(0.0, 1.0)).toColor();
 
     switch (this.shape) {
@@ -89,9 +103,8 @@ class Neumorph extends StatelessWidget {
         return LinearGradient(
           transform: GradientRotation(45 * pi / 180),
           colors: [
-            darkColor.withOpacity(this.intensity),
-            this.color,
-            lightColor.withOpacity(this.intensity),
+            hsl.withLightness((hsl.lightness * 0.95).clamp(0.0, 1.0)).toColor(),
+            hsl.withLightness((hsl.lightness * 1.05).clamp(0.0, 1.0)).toColor(),
           ],
         );
         break;
@@ -99,9 +112,8 @@ class Neumorph extends StatelessWidget {
         return LinearGradient(
           transform: GradientRotation(45 * pi / 180),
           colors: [
-            lightColor.withOpacity(this.intensity),
-            this.color,
-            darkColor.withOpacity(this.intensity),
+            hsl.withLightness((hsl.lightness * 1.05).clamp(0.0, 1.0)).toColor(),
+            hsl.withLightness((hsl.lightness * 0.95).clamp(0.0, 1.0)).toColor(),
           ],
         );
         break;
