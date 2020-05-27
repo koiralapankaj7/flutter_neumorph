@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_neumorph/neumorph.dart';
-import 'package:flutter_neumorph/neumorph_custom_painter.dart';
 import 'package:flutter_neumorph/neumorph_shape_widget.dart';
 
 class Home extends StatefulWidget {
@@ -14,7 +13,7 @@ class _HomeState extends State<Home> {
   //
 
   Color _color = Color(int.parse("0xFF" + "b2b1ff"));
-  NeumorphPoint activePoint = NeumorphPoint.topLeft;
+  Alignment lightSource = Alignment.topLeft;
   Size size = Size(200.0, 200.0);
   double radius = 40.0;
   double intensity = 0.50;
@@ -44,19 +43,23 @@ class _HomeState extends State<Home> {
                   Container(
                     child: Row(
                       children: <Widget>[
-                        _Point(
-                          point: NeumorphPoint.topLeft,
-                          isActive: activePoint == NeumorphPoint.topLeft,
+                        _LightSource(
+                          lightSource: Alignment.topLeft,
+                          isActive: lightSource == Alignment.topLeft,
                           onPressed: () {
-                            _updatePoint(NeumorphPoint.topLeft);
+                            setState(() {
+                              lightSource = Alignment.topLeft;
+                            });
                           },
                         ),
                         Expanded(child: Container()),
-                        _Point(
-                          point: NeumorphPoint.topRight,
-                          isActive: activePoint == NeumorphPoint.topRight,
+                        _LightSource(
+                          lightSource: Alignment.topRight,
+                          isActive: lightSource == Alignment.topRight,
                           onPressed: () {
-                            _updatePoint(NeumorphPoint.topRight);
+                            setState(() {
+                              lightSource = Alignment.topRight;
+                            });
                           },
                         ),
                       ],
@@ -70,7 +73,7 @@ class _HomeState extends State<Home> {
                     alignment: Alignment.center,
                     child: Neumorph(
                       color: _color,
-                      point: activePoint,
+                      lightSource: lightSource,
                       blur: this.blur,
                       height: this.size.height,
                       width: this.size.width,
@@ -85,19 +88,23 @@ class _HomeState extends State<Home> {
                   Container(
                     child: Row(
                       children: <Widget>[
-                        _Point(
-                          point: NeumorphPoint.bottomLeft,
-                          isActive: activePoint == NeumorphPoint.bottomLeft,
+                        _LightSource(
+                          lightSource: Alignment.bottomLeft,
+                          isActive: lightSource == Alignment.bottomLeft,
                           onPressed: () {
-                            _updatePoint(NeumorphPoint.bottomLeft);
+                            setState(() {
+                              lightSource = Alignment.bottomLeft;
+                            });
                           },
                         ),
                         Expanded(child: Container()),
-                        _Point(
-                          point: NeumorphPoint.bottomRight,
-                          isActive: activePoint == NeumorphPoint.bottomRight,
+                        _LightSource(
+                          lightSource: Alignment.bottomRight,
+                          isActive: lightSource == Alignment.bottomRight,
                           onPressed: () {
-                            _updatePoint(NeumorphPoint.bottomRight);
+                            setState(() {
+                              lightSource = Alignment.bottomRight;
+                            });
                           },
                         ),
                       ],
@@ -276,10 +283,11 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void _updatePoint(NeumorphPoint point) {
+  void _updateLightSource(Alignment lightSource) {
     if (mounted) {
       setState(() {
-        activePoint = point;
+        lightSource = lightSource;
+        print("Light source : => $lightSource");
       });
     }
   }
@@ -380,14 +388,14 @@ class _Shape extends StatelessWidget {
   }
 }
 
-class _Point extends StatelessWidget {
-  final NeumorphPoint point;
+class _LightSource extends StatelessWidget {
+  final Alignment lightSource;
   final bool isActive;
   final Function onPressed;
 
-  const _Point({
+  const _LightSource({
     Key key,
-    this.point,
+    this.lightSource,
     this.isActive = false,
     this.onPressed,
   }) : super(key: key);
@@ -396,17 +404,18 @@ class _Point extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: this.onPressed,
+      focusColor: Colors.green,
       child: Container(
-        height: 20.0,
-        width: 20.0,
+        height: 25.0,
+        width: 25.0,
         decoration: BoxDecoration(
           color: this.isActive ? Colors.white : Colors.transparent,
           border: Border.all(color: Colors.black, width: 2.0),
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(point == NeumorphPoint.bottomRight ? 20.0 : 0.0),
-            topRight: Radius.circular(point == NeumorphPoint.bottomLeft ? 20.0 : 0.0),
-            bottomRight: Radius.circular(point == NeumorphPoint.topLeft ? 20.0 : 0.0),
-            bottomLeft: Radius.circular(point == NeumorphPoint.topRight ? 20.0 : 0.0),
+            topLeft: Radius.circular(lightSource == Alignment.bottomRight ? 25.0 : 0.0),
+            topRight: Radius.circular(lightSource == Alignment.bottomLeft ? 25.0 : 0.0),
+            bottomRight: Radius.circular(lightSource == Alignment.topLeft ? 25.0 : 0.0),
+            bottomLeft: Radius.circular(lightSource == Alignment.topRight ? 25.0 : 0.0),
           ),
         ),
       ),
