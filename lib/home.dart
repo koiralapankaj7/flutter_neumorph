@@ -12,11 +12,11 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   //
 
-  Color _color = Color(int.parse("0xFF" + "b2b1ff"));
+  Color _color = Color(int.parse("0xFF" + "55b9f3"));
   Alignment lightSource = Alignment.topLeft;
   Size size = Size(200.0, 200.0);
   double radius = 40.0;
-  double intensity = 0.50;
+  double intensity = 1.0;
   double distance = 20.0;
   double blur = 40.0;
   NeumorphShape activeShape = NeumorphShape.flat;
@@ -25,244 +25,246 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _color,
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            //
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              //
 
-            // Main Neumorph with activ point settings
-            Container(
-              padding: EdgeInsets.all(16.0),
-              margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-              // color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  //
+              // Main Neumorph with activ point settings
+              Container(
+                padding: EdgeInsets.all(16.0),
+                margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                // color: Colors.white,
+                child: Column(
+                  children: <Widget>[
+                    //
 
-                  // Top
-                  Container(
-                    child: Row(
-                      children: <Widget>[
-                        _LightSource(
-                          lightSource: Alignment.topLeft,
-                          isActive: lightSource == Alignment.topLeft,
-                          onPressed: () {
-                            setState(() {
-                              lightSource = Alignment.topLeft;
-                            });
-                          },
-                        ),
-                        Expanded(child: Container()),
-                        _LightSource(
-                          lightSource: Alignment.topRight,
-                          isActive: lightSource == Alignment.topRight,
-                          onPressed: () {
-                            setState(() {
-                              lightSource = Alignment.topRight;
-                            });
-                          },
-                        ),
-                      ],
+                    // Top
+                    Container(
+                      child: Row(
+                        children: <Widget>[
+                          _LightSource(
+                            lightSource: Alignment.topLeft,
+                            isActive: lightSource == Alignment.topLeft,
+                            onPressed: () {
+                              setState(() {
+                                lightSource = Alignment.topLeft;
+                              });
+                            },
+                          ),
+                          Expanded(child: Container()),
+                          _LightSource(
+                            lightSource: Alignment.topRight,
+                            isActive: lightSource == Alignment.topRight,
+                            onPressed: () {
+                              setState(() {
+                                lightSource = Alignment.topRight;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
 
-                  // Center
-                  Container(
-                    height: 350.0,
-                    width: 350.0,
-                    alignment: Alignment.center,
-                    child: Neumorph(
-                      color: _color,
-                      lightSource: lightSource,
-                      blur: this.blur,
-                      height: this.size.height,
-                      width: this.size.width,
-                      radius: this.radius,
-                      distance: this.distance,
-                      intensity: this.intensity,
-                      shape: this.activeShape,
+                    // Center
+                    Container(
+                      height: 350.0,
+                      width: 350.0,
+                      alignment: Alignment.center,
+                      child: Neumorph(
+                        color: _color,
+                        lightSource: lightSource,
+                        blur: this.blur,
+                        height: this.size.height,
+                        width: this.size.width,
+                        radius: this.radius,
+                        distance: this.distance,
+                        intensity: this.intensity,
+                        shape: this.activeShape,
+                      ),
                     ),
-                  ),
 
-                  // bottom
-                  Container(
-                    child: Row(
-                      children: <Widget>[
-                        _LightSource(
-                          lightSource: Alignment.bottomLeft,
-                          isActive: lightSource == Alignment.bottomLeft,
-                          onPressed: () {
-                            setState(() {
-                              lightSource = Alignment.bottomLeft;
-                            });
-                          },
-                        ),
-                        Expanded(child: Container()),
-                        _LightSource(
-                          lightSource: Alignment.bottomRight,
-                          isActive: lightSource == Alignment.bottomRight,
-                          onPressed: () {
-                            setState(() {
-                              lightSource = Alignment.bottomRight;
-                            });
-                          },
-                        ),
-                      ],
+                    // bottom
+                    Container(
+                      child: Row(
+                        children: <Widget>[
+                          _LightSource(
+                            lightSource: Alignment.bottomLeft,
+                            isActive: lightSource == Alignment.bottomLeft,
+                            onPressed: () {
+                              setState(() {
+                                lightSource = Alignment.bottomLeft;
+                              });
+                            },
+                          ),
+                          Expanded(child: Container()),
+                          _LightSource(
+                            lightSource: Alignment.bottomRight,
+                            isActive: lightSource == Alignment.bottomRight,
+                            onPressed: () {
+                              setState(() {
+                                lightSource = Alignment.bottomRight;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
 
-                  //
-                ],
+                    //
+                  ],
+                ),
               ),
-            ),
 
-            // Margin
-            // Container(height: 100.0),
+              // Margin
+              // Container(height: 100.0),
 
-            // Size changer
-            CustomSLider(
-              title: 'Size',
-              onChanged: (double value) {
-                if (mounted) {
-                  setState(() {
-                    size = Size(value.truncateToDouble(), value.truncateToDouble());
-                    this.distance = (value.truncateToDouble() * 0.10).roundToDouble();
-                    this.blur = this.distance * 2;
-                  });
-                }
-              },
-              min: 40.0,
-              max: 200.0,
-              color: this._color,
-              value: this.size.width,
-            ),
-
-            // Radius changer
-            CustomSLider(
-              title: 'Radius',
-              onChanged: (double value) {
-                if (mounted) {
-                  setState(() {
-                    this.radius = value.truncateToDouble();
-                  });
-                }
-              },
-              min: 20.0,
-              max: 100.0,
-              color: this._color,
-              value: this.radius,
-            ),
-
-            // Distance changer
-            CustomSLider(
-              title: 'Distance',
-              onChanged: (double value) {
-                if (mounted) {
-                  setState(() {
-                    this.distance = value.truncateToDouble();
-                    this.blur = this.distance * 2;
-                  });
-                }
-              },
-              min: 1.0,
-              max: 30.0,
-              color: this._color,
-              value: this.distance,
-            ),
-
-            // Blur changer
-            CustomSLider(
-              title: 'Blur',
-              onChanged: (double value) {
-                if (mounted) {
-                  setState(() {
-                    this.blur = value.truncateToDouble();
-                  });
-                }
-              },
-              min: 0.0,
-              max: 60.0,
-              color: this._color,
-              value: this.blur,
-            ),
-
-            // Intensity changer
-            CustomSLider(
-              title: 'Intensity',
-              onChanged: (double value) {
-                if (mounted) {
-                  setState(() {
-                    this.intensity = double.parse(value.toStringAsFixed(1));
-                  });
-                }
-              },
-              min: 0.0,
-              max: 1.0,
-              color: this._color,
-              value: this.intensity,
-            ),
-
-            // Shape changer
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text("Shape :", style: TextStyle(fontWeight: FontWeight.bold)),
-                  SizedBox(height: 4.0),
-                  Container(
-                    color: Colors.black.withOpacity(0.7),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(child: SizedBox()),
-                        _Shape(
-                          color: _color,
-                          name: 'Flat',
-                          shape: NeumorphShape.flat,
-                          activeShape: this.activeShape,
-                          onPressed: _onShapeChanged,
-                        ),
-                        _Shape(
-                          color: _color,
-                          name: 'Concave',
-                          shape: NeumorphShape.concave,
-                          activeShape: this.activeShape,
-                          onPressed: _onShapeChanged,
-                        ),
-                        _Shape(
-                          color: _color,
-                          name: 'Convex',
-                          shape: NeumorphShape.convex,
-                          activeShape: this.activeShape,
-                          onPressed: _onShapeChanged,
-                        ),
-                        _Shape(
-                          color: _color,
-                          name: 'Pressed',
-                          shape: NeumorphShape.pressed,
-                          activeShape: this.activeShape,
-                          onPressed: _onShapeChanged,
-                        ),
-                        Expanded(child: SizedBox()),
-                      ],
-                    ),
-                  ),
-                ],
+              // Size changer
+              CustomSLider(
+                title: 'Size',
+                onChanged: (double value) {
+                  if (mounted) {
+                    setState(() {
+                      size = Size(value.truncateToDouble(), value.truncateToDouble());
+                      this.distance = (value.truncateToDouble() * 0.10).roundToDouble();
+                      this.blur = this.distance * 2;
+                    });
+                  }
+                },
+                min: 40.0,
+                max: 200.0,
+                color: this._color,
+                value: this.size.width,
               ),
-            ),
 
-            // Code
-            Container(
-              height: 200.0,
-              margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
-              color: Colors.black,
-            ),
+              // Radius changer
+              CustomSLider(
+                title: 'Radius',
+                onChanged: (double value) {
+                  if (mounted) {
+                    setState(() {
+                      this.radius = value.truncateToDouble();
+                    });
+                  }
+                },
+                min: 20.0,
+                max: 100.0,
+                color: this._color,
+                value: this.radius,
+              ),
 
-            // Margin
-            SizedBox(height: 100.0),
+              // Distance changer
+              CustomSLider(
+                title: 'Distance',
+                onChanged: (double value) {
+                  if (mounted) {
+                    setState(() {
+                      this.distance = value.truncateToDouble();
+                      this.blur = this.distance * 2;
+                    });
+                  }
+                },
+                min: 1.0,
+                max: 30.0,
+                color: this._color,
+                value: this.distance,
+              ),
 
-            //
-          ],
+              // Blur changer
+              CustomSLider(
+                title: 'Blur',
+                onChanged: (double value) {
+                  if (mounted) {
+                    setState(() {
+                      this.blur = value.truncateToDouble();
+                    });
+                  }
+                },
+                min: 0.0,
+                max: 60.0,
+                color: this._color,
+                value: this.blur,
+              ),
+
+              // Intensity changer
+              CustomSLider(
+                title: 'Intensity',
+                onChanged: (double value) {
+                  if (mounted) {
+                    setState(() {
+                      this.intensity = double.parse(value.toStringAsFixed(1));
+                    });
+                  }
+                },
+                min: 0.0,
+                max: 1.0,
+                color: this._color,
+                value: this.intensity,
+              ),
+
+              // Shape changer
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("Shape :", style: TextStyle(fontWeight: FontWeight.bold)),
+                    SizedBox(height: 4.0),
+                    Container(
+                      color: Colors.black.withOpacity(0.7),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(child: SizedBox()),
+                          _Shape(
+                            color: _color,
+                            name: 'Flat',
+                            shape: NeumorphShape.flat,
+                            activeShape: this.activeShape,
+                            onPressed: _onShapeChanged,
+                          ),
+                          _Shape(
+                            color: _color,
+                            name: 'Concave',
+                            shape: NeumorphShape.concave,
+                            activeShape: this.activeShape,
+                            onPressed: _onShapeChanged,
+                          ),
+                          _Shape(
+                            color: _color,
+                            name: 'Convex',
+                            shape: NeumorphShape.convex,
+                            activeShape: this.activeShape,
+                            onPressed: _onShapeChanged,
+                          ),
+                          _Shape(
+                            color: _color,
+                            name: 'Pressed',
+                            shape: NeumorphShape.pressed,
+                            activeShape: this.activeShape,
+                            onPressed: _onShapeChanged,
+                          ),
+                          Expanded(child: SizedBox()),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Code
+              Container(
+                height: 200.0,
+                margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                color: Colors.black,
+              ),
+
+              // Margin
+              SizedBox(height: 100.0),
+
+              //
+            ],
+          ),
         ),
       ),
       floatingActionButton: InkWell(
@@ -281,15 +283,6 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
-  }
-
-  void _updateLightSource(Alignment lightSource) {
-    if (mounted) {
-      setState(() {
-        lightSource = lightSource;
-        print("Light source : => $lightSource");
-      });
-    }
   }
 
   void _onPressed() {
@@ -409,8 +402,8 @@ class _LightSource extends StatelessWidget {
         height: 25.0,
         width: 25.0,
         decoration: BoxDecoration(
-          color: this.isActive ? Colors.white : Colors.transparent,
-          border: Border.all(color: Colors.black, width: 2.0),
+          color: this.isActive ? Colors.yellow : Colors.transparent,
+          border: Border.all(color: this.isActive ? Colors.transparent : Colors.black, width: 1.0),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(lightSource == Alignment.bottomRight ? 25.0 : 0.0),
             topRight: Radius.circular(lightSource == Alignment.bottomLeft ? 25.0 : 0.0),
