@@ -3,17 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_neumorph/pressed_decoration.dart';
 
 class Neumorph extends StatelessWidget {
-  final Widget child;
-  final double height;
-  final double width;
-  final double radius;
-  final double distance;
-  final double intensity;
-  final double blur;
-  final NeumorphShape shape;
-  final Alignment lightSource;
-  final Color color;
-
   const Neumorph({
     Key key,
     this.height = 200.0,
@@ -29,19 +18,36 @@ class Neumorph extends StatelessWidget {
   })  : assert(intensity != null ? intensity >= 0.0 && intensity <= 1.0 : true),
         super(key: key);
 
+  final Widget child;
+  final double height;
+  final double width;
+  final double radius;
+  final double distance;
+  final double intensity;
+  final double blur;
+  final NeumorphShape shape;
+  final Alignment lightSource;
+  final Color color;
+
+  double get lightFactor => lightnessFactor(this.color, true);
+  double get darkFactor => lightnessFactor(this.color, false);
+  HSLColor get hsl => HSLColor.fromColor(this.color);
+  Color get lightColor =>
+      hsl.withLightness((hsl.lightness * lightFactor).clamp(0.0, 1.0)).toColor();
+  Color get darkColor => hsl.withLightness((hsl.lightness * darkFactor).clamp(0.0, 1.0)).toColor();
+
   @override
   Widget build(BuildContext context) {
     //
 
-    final HSLColor hsl = HSLColor.fromColor(this.color);
+    // final HSLColor hsl = HSLColor.fromColor(this.color);
 
-    final double lightFactor = lightnessFactor(this.color, true);
-    final double darkFactor = lightnessFactor(this.color, false);
+    print("Light factor : $lightFactor || Dark factor : $darkFactor");
 
-    final Color lightColor =
-        hsl.withLightness((hsl.lightness * lightFactor).clamp(0.0, 1.0)).toColor();
-    final Color darkColor =
-        hsl.withLightness((hsl.lightness * darkFactor).clamp(0.0, 1.0)).toColor();
+    // final Color lightColor =
+    // hsl.withLightness((hsl.lightness * lightFactor).clamp(0.0, 1.0)).toColor();
+    // final Color darkColor =
+    //     hsl.withLightness((hsl.lightness * darkFactor).clamp(0.0, 1.0)).toColor();
 
     var pressedDecoration = CustomisedDecoration(
       colors: [
@@ -108,9 +114,9 @@ class Neumorph extends StatelessWidget {
   }
 
   Gradient _getColor(NeumorphShape shape) {
-    final HSLColor hsl = HSLColor.fromColor(this.color);
-    final Color lightColor = hsl.withLightness((hsl.lightness * 1.20).clamp(0.0, 1.0)).toColor();
-    final Color darkColor = hsl.withLightness((hsl.lightness * 0.90).clamp(0.0, 1.0)).toColor();
+    // final HSLColor hsl = HSLColor.fromColor(this.color);
+    // final Color lightColor = hsl.withLightness((hsl.lightness * 1.20).clamp(0.0, 1.0)).toColor();
+    // final Color darkColor = hsl.withLightness((hsl.lightness * 0.90).clamp(0.0, 1.0)).toColor();
 
     switch (this.shape) {
       case NeumorphShape.flat:
@@ -118,10 +124,10 @@ class Neumorph extends StatelessWidget {
         break;
       case NeumorphShape.concave:
         return LinearGradient(
-          transform: GradientRotation(45 * pi / 180),
+          transform: GradientRotation(this.lightSource.radians),
           colors: [
-            hsl.withLightness((hsl.lightness * 0.95).clamp(0.0, 1.0)).toColor(),
-            hsl.withLightness((hsl.lightness * 1.05).clamp(0.0, 1.0)).toColor(),
+            darkColor.withOpacity(this.intensity),
+            lightColor.withOpacity(this.intensity),
           ],
         );
         break;
@@ -225,11 +231,31 @@ double lightnessFactor(Color color, bool light) {
       return light ? 1.25 : 0.75;
     case ColorType.mediumLight:
       return light ? 1.20 : 0.80;
+    case ColorType.normal:
+      return light ? 1.15 : 0.85;
     case ColorType.mediumDark:
       return light ? 1.10 : 0.90;
     case ColorType.mostDark:
       return light ? 1.05 : 0.95;
     default:
-      return light ? 1.15 : 0.85;
+      return light ? 1.0 : 0.0;
+  }
+}
+
+extension AlignmentExtension on Alignment {
+  double get radians {
+    if (this == Alignment.topLeft) {
+      return pi / 4;
+    }
+    if (this == Alignment.topRight) {
+      return 3 * pi / 4;
+    }
+    if (this == Alignment.bottomLeft) {
+      return 7 * pi / 4;
+    }
+    if (this == Alignment.bottomRight) {
+      return 5 * pi / 4;
+    }
+    return 10.0;
   }
 }
