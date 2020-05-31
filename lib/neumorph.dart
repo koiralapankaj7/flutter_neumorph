@@ -40,34 +40,6 @@ class Neumorph extends StatelessWidget {
   Widget build(BuildContext context) {
     //
 
-    final List<BoxShadow> pressedShadow = [
-      BoxShadow(
-        blurRadius: this.blur,
-        offset: Offset(this.distance, this.distance),
-        color: darkColor.withOpacity(this.intensity),
-      ),
-      BoxShadow(
-        blurRadius: this.blur,
-        offset: Offset(-this.distance, -this.distance),
-        color: lightColor.withOpacity(this.intensity),
-      ),
-    ];
-
-    final List<BoxShadow> convexShadow = [
-      BoxShadow(
-        blurRadius: this.blur,
-        offset: _getOffset(true),
-        color: lightColor.withOpacity(this.intensity),
-        // color: hsl.withLightness((hsl.lightness * 1.10).clamp(0.0, 1.0)).toColor(),
-      ),
-      BoxShadow(
-        blurRadius: this.blur,
-        offset: _getOffset(false),
-        color: darkColor.withOpacity(this.intensity),
-        // color: hsl.withLightness((hsl.lightness * 0.90).clamp(0.0, 1.0)).toColor(),
-      ),
-    ];
-
     final List<BoxShadow> defaultShadow = [
       BoxShadow(
         blurRadius: this.blur,
@@ -84,20 +56,19 @@ class Neumorph extends StatelessWidget {
     final Decoration defaultDecoration = BoxDecoration(
       gradient: _getColor(this.shape),
       borderRadius: BorderRadius.circular(this.radius),
-      boxShadow: this.shape == NeumorphShape.pressed
-          ? pressedShadow
-          : this.shape == NeumorphShape.convex ? convexShadow : defaultShadow,
+      boxShadow: defaultShadow,
     );
 
     final Decoration pressedDecoration = CustomisedDecoration(
       colors: [
-        hsl.withLightness((hsl.lightness * 1.20).clamp(0.0, 1.0)).toColor(),
-        hsl.withLightness((hsl.lightness * 0.80).clamp(0.0, 1.0)).toColor(),
+        lightColor,
+        darkColor,
       ],
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(this.radius),
       ),
       depth: this.distance,
+      blur: this.blur,
       opacity: this.intensity,
       lightSource: this.lightSource,
     );

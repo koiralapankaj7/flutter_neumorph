@@ -7,6 +7,7 @@ import 'package:flutter/painting.dart';
 class CustomisedDecoration extends Decoration {
   final ShapeBorder shape;
   final double depth;
+  final double blur;
   final List<Color> colors;
   final double opacity;
   final Alignment lightSource;
@@ -14,6 +15,7 @@ class CustomisedDecoration extends Decoration {
   CustomisedDecoration({
     @required this.shape,
     @required this.depth,
+    this.blur,
     this.colors = const [Colors.black87, Colors.white],
     this.opacity = 1.0,
     this.lightSource = Alignment.topLeft,
@@ -22,7 +24,7 @@ class CustomisedDecoration extends Decoration {
 
   @override
   BoxPainter createBoxPainter([onChanged]) =>
-      _CustomisedDecorationPainter(shape, depth, colors, opacity, lightSource);
+      _CustomisedDecorationPainter(shape, depth, blur, colors, opacity, lightSource);
 
   @override
   EdgeInsetsGeometry get padding => shape.dimensions;
@@ -48,12 +50,19 @@ class CustomisedDecoration extends Decoration {
 class _CustomisedDecorationPainter extends BoxPainter {
   ShapeBorder shape;
   double depth;
+  double blur;
   List<Color> colors;
   double opacity;
   Alignment lightSource;
 
   _CustomisedDecorationPainter(
-      this.shape, this.depth, this.colors, this.opacity, this.lightSource) {
+    this.shape,
+    this.depth,
+    this.blur,
+    this.colors,
+    this.opacity,
+    this.lightSource,
+  ) {
     if (depth > 0) {
       colors = [
         colors[1],
@@ -96,7 +105,6 @@ class _CustomisedDecorationPainter extends BoxPainter {
           colors,
           stops,
         );
-
       canvas.save();
       canvas.clipRect(alignment.inscribe(clipSize, rect));
       canvas.drawPath(path, paint);
@@ -138,168 +146,168 @@ class _CustomisedDecorationPainter extends BoxPainter {
   }
 }
 
-class CornerDecoration extends Decoration {
-  final double fillLeft;
-  final double fillTop;
-  final double fillRight;
-  final double fillBottom;
-  final double strokeWidth;
-  final Color strokeColor;
-  final EdgeInsets insets;
-  final double position;
-  final CornerSide cornerSide;
+// class CornerDecoration extends Decoration {
+//   final double fillLeft;
+//   final double fillTop;
+//   final double fillRight;
+//   final double fillBottom;
+//   final double strokeWidth;
+//   final Color strokeColor;
+//   final EdgeInsets insets;
+//   final double position;
+//   final CornerSide cornerSide;
 
-  CornerDecoration({
-    this.fillLeft = 0.0,
-    this.fillTop = 0.0,
-    this.fillRight = 0.0,
-    this.fillBottom = 0.0,
-    this.strokeWidth = 3,
-    @required this.strokeColor,
-    EdgeInsets insets,
-    this.position = 0.5,
-    this.cornerSide = const CornerSide._all(Size.square(16)),
-  })  : insets = insets ?? EdgeInsets.all(strokeWidth),
-        assert(0 <= fillLeft && fillLeft <= 1),
-        assert(0 <= fillTop && fillTop <= 1),
-        assert(0 <= fillRight && fillRight <= 1),
-        assert(0 <= fillBottom && fillBottom <= 1);
+//   CornerDecoration({
+//     this.fillLeft = 0.0,
+//     this.fillTop = 0.0,
+//     this.fillRight = 0.0,
+//     this.fillBottom = 0.0,
+//     this.strokeWidth = 3,
+//     @required this.strokeColor,
+//     EdgeInsets insets,
+//     this.position = 0.5,
+//     this.cornerSide = const CornerSide._all(Size.square(16)),
+//   })  : insets = insets ?? EdgeInsets.all(strokeWidth),
+//         assert(0 <= fillLeft && fillLeft <= 1),
+//         assert(0 <= fillTop && fillTop <= 1),
+//         assert(0 <= fillRight && fillRight <= 1),
+//         assert(0 <= fillBottom && fillBottom <= 1);
 
-  @override
-  BoxPainter createBoxPainter([onChanged]) => _CornerBoxPainter(fillLeft, fillTop, fillRight,
-      fillBottom, strokeWidth, strokeColor, insets, position, cornerSide);
+//   @override
+//   BoxPainter createBoxPainter([onChanged]) => _CornerBoxPainter(fillLeft, fillTop, fillRight,
+//       fillBottom, strokeWidth, strokeColor, insets, position, cornerSide);
 
-  @override
-  EdgeInsetsGeometry get padding => insets;
+//   @override
+//   EdgeInsetsGeometry get padding => insets;
 
-  @override
-  Decoration lerpFrom(Decoration a, double t) {
-    if (a is CornerDecoration) {
-      return CornerDecoration(
-        fillLeft: lerpDouble(a.fillLeft, fillLeft, t),
-        fillTop: lerpDouble(a.fillTop, fillTop, t),
-        fillRight: lerpDouble(a.fillRight, fillRight, t),
-        fillBottom: lerpDouble(a.fillBottom, fillBottom, t),
-        strokeWidth: lerpDouble(a.strokeWidth, strokeWidth, t),
-        strokeColor: Color.lerp(a.strokeColor, strokeColor, t),
-        insets: EdgeInsetsGeometry.lerp(a.insets, insets, t),
-        position: lerpDouble(a.position, position, t),
-        cornerSide: CornerSide.lerp(a.cornerSide, cornerSide, t),
-      );
-    }
-    return null;
-  }
-}
+//   @override
+//   Decoration lerpFrom(Decoration a, double t) {
+//     if (a is CornerDecoration) {
+//       return CornerDecoration(
+//         fillLeft: lerpDouble(a.fillLeft, fillLeft, t),
+//         fillTop: lerpDouble(a.fillTop, fillTop, t),
+//         fillRight: lerpDouble(a.fillRight, fillRight, t),
+//         fillBottom: lerpDouble(a.fillBottom, fillBottom, t),
+//         strokeWidth: lerpDouble(a.strokeWidth, strokeWidth, t),
+//         strokeColor: Color.lerp(a.strokeColor, strokeColor, t),
+//         insets: EdgeInsetsGeometry.lerp(a.insets, insets, t),
+//         position: lerpDouble(a.position, position, t),
+//         cornerSide: CornerSide.lerp(a.cornerSide, cornerSide, t),
+//       );
+//     }
+//     return null;
+//   }
+// }
 
-class CornerSide {
-  CornerSide.all(double x, [double y]) : this._all(Size(x, y ?? x));
+// class CornerSide {
+//   CornerSide.all(double x, [double y]) : this._all(Size(x, y ?? x));
 
-  CornerSide.vertical({
-    Size top = Size.zero,
-    Size bottom = Size.zero,
-  }) : this.only(
-          topLeft: top,
-          topRight: top,
-          bottomLeft: bottom,
-          bottomRight: bottom,
-        );
+//   CornerSide.vertical({
+//     Size top = Size.zero,
+//     Size bottom = Size.zero,
+//   }) : this.only(
+//           topLeft: top,
+//           topRight: top,
+//           bottomLeft: bottom,
+//           bottomRight: bottom,
+//         );
 
-  CornerSide.horizontal({
-    Size left = Size.zero,
-    Size right = Size.zero,
-  }) : this.only(
-          topLeft: left,
-          topRight: right,
-          bottomLeft: left,
-          bottomRight: right,
-        );
+//   CornerSide.horizontal({
+//     Size left = Size.zero,
+//     Size right = Size.zero,
+//   }) : this.only(
+//           topLeft: left,
+//           topRight: right,
+//           bottomLeft: left,
+//           bottomRight: right,
+//         );
 
-  const CornerSide.only({
-    this.topLeft = Size.zero,
-    this.topRight = Size.zero,
-    this.bottomLeft = Size.zero,
-    this.bottomRight = Size.zero,
-  });
+//   const CornerSide.only({
+//     this.topLeft = Size.zero,
+//     this.topRight = Size.zero,
+//     this.bottomLeft = Size.zero,
+//     this.bottomRight = Size.zero,
+//   });
 
-  const CornerSide._all(Size size)
-      : this.only(
-          topLeft: size,
-          topRight: size,
-          bottomLeft: size,
-          bottomRight: size,
-        );
+//   const CornerSide._all(Size size)
+//       : this.only(
+//           topLeft: size,
+//           topRight: size,
+//           bottomLeft: size,
+//           bottomRight: size,
+//         );
 
-  final Size topLeft;
-  final Size topRight;
-  final Size bottomLeft;
-  final Size bottomRight;
+//   final Size topLeft;
+//   final Size topRight;
+//   final Size bottomLeft;
+//   final Size bottomRight;
 
-  static CornerSide lerp(CornerSide a, CornerSide b, double t) {
-    return CornerSide.only(
-      topLeft: Size.lerp(a.topLeft, b.topLeft, t),
-      topRight: Size.lerp(a.topRight, b.topRight, t),
-      bottomRight: Size.lerp(a.bottomRight, b.bottomRight, t),
-      bottomLeft: Size.lerp(a.bottomLeft, b.bottomLeft, t),
-    );
-  }
-}
+//   static CornerSide lerp(CornerSide a, CornerSide b, double t) {
+//     return CornerSide.only(
+//       topLeft: Size.lerp(a.topLeft, b.topLeft, t),
+//       topRight: Size.lerp(a.topRight, b.topRight, t),
+//       bottomRight: Size.lerp(a.bottomRight, b.bottomRight, t),
+//       bottomLeft: Size.lerp(a.bottomLeft, b.bottomLeft, t),
+//     );
+//   }
+// }
 
-class _CornerBoxPainter extends BoxPainter {
-  final double fillLeft;
-  final double fillTop;
-  final double fillRight;
-  final double fillBottom;
-  final double strokeWidth;
-  final EdgeInsets insets;
-  final double position;
-  final CornerSide cornerSide;
-  Paint _p;
+// class _CornerBoxPainter extends BoxPainter {
+//   final double fillLeft;
+//   final double fillTop;
+//   final double fillRight;
+//   final double fillBottom;
+//   final double strokeWidth;
+//   final EdgeInsets insets;
+//   final double position;
+//   final CornerSide cornerSide;
+//   Paint _p;
 
-  _CornerBoxPainter(this.fillLeft, this.fillTop, this.fillRight, this.fillBottom, this.strokeWidth,
-      strokeColor, this.insets, this.position, this.cornerSide) {
-    _p = Paint()
-      ..color = strokeColor
-      ..style = PaintingStyle.stroke
-      // ..strokeCap = StrokeCap.square
-      ..strokeWidth = strokeWidth;
-  }
+//   _CornerBoxPainter(this.fillLeft, this.fillTop, this.fillRight, this.fillBottom, this.strokeWidth,
+//       strokeColor, this.insets, this.position, this.cornerSide) {
+//     _p = Paint()
+//       ..color = strokeColor
+//       ..style = PaintingStyle.stroke
+//       // ..strokeCap = StrokeCap.square
+//       ..strokeWidth = strokeWidth;
+//   }
 
-  @override
-  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
-    var _rect = offset & configuration.size;
+//   @override
+//   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+//     var _rect = offset & configuration.size;
 
-    var a = _rect.deflate(strokeWidth / 2);
-    var b = insets.deflateRect(_rect).inflate(strokeWidth / 2);
-    var rect = Rect.lerp(a, b, position);
+//     var a = _rect.deflate(strokeWidth / 2);
+//     var b = insets.deflateRect(_rect).inflate(strokeWidth / 2);
+//     var rect = Rect.lerp(a, b, position);
 
-    Path _path = Path();
+//     Path _path = Path();
 
-    var topLeftCornerRect = Alignment.topLeft.inscribe(cornerSide.topLeft, rect);
-    var topRightCornerRect = Alignment.topRight.inscribe(cornerSide.topRight, rect);
-    var bottomRightCornerRect = Alignment.bottomRight.inscribe(cornerSide.bottomRight, rect);
-    var bottomLeftCornerRect = Alignment.bottomLeft.inscribe(cornerSide.bottomLeft, rect);
-    var i = [
-      Offset.lerp(topLeftCornerRect.bottomLeft, rect.centerLeft, fillLeft),
-      rect.topLeft,
-      Offset.lerp(topLeftCornerRect.topRight, rect.topCenter, fillTop),
-      Offset.lerp(topRightCornerRect.topLeft, rect.topCenter, fillTop),
-      rect.topRight,
-      Offset.lerp(topRightCornerRect.bottomRight, rect.centerRight, fillRight),
-      Offset.lerp(bottomRightCornerRect.topRight, rect.centerRight, fillRight),
-      rect.bottomRight,
-      Offset.lerp(bottomRightCornerRect.bottomLeft, rect.bottomCenter, fillBottom),
-      Offset.lerp(bottomLeftCornerRect.bottomRight, rect.bottomCenter, fillBottom),
-      rect.bottomLeft,
-      Offset.lerp(bottomLeftCornerRect.topLeft, rect.centerLeft, fillLeft),
-    ].iterator;
+//     var topLeftCornerRect = Alignment.topLeft.inscribe(cornerSide.topLeft, rect);
+//     var topRightCornerRect = Alignment.topRight.inscribe(cornerSide.topRight, rect);
+//     var bottomRightCornerRect = Alignment.bottomRight.inscribe(cornerSide.bottomRight, rect);
+//     var bottomLeftCornerRect = Alignment.bottomLeft.inscribe(cornerSide.bottomLeft, rect);
+//     var i = [
+//       Offset.lerp(topLeftCornerRect.bottomLeft, rect.centerLeft, fillLeft),
+//       rect.topLeft,
+//       Offset.lerp(topLeftCornerRect.topRight, rect.topCenter, fillTop),
+//       Offset.lerp(topRightCornerRect.topLeft, rect.topCenter, fillTop),
+//       rect.topRight,
+//       Offset.lerp(topRightCornerRect.bottomRight, rect.centerRight, fillRight),
+//       Offset.lerp(bottomRightCornerRect.topRight, rect.centerRight, fillRight),
+//       rect.bottomRight,
+//       Offset.lerp(bottomRightCornerRect.bottomLeft, rect.bottomCenter, fillBottom),
+//       Offset.lerp(bottomLeftCornerRect.bottomRight, rect.bottomCenter, fillBottom),
+//       rect.bottomLeft,
+//       Offset.lerp(bottomLeftCornerRect.topLeft, rect.centerLeft, fillLeft),
+//     ].iterator;
 
-    while (i.moveNext()) {
-      _path.moveTo(i.current.dx, i.current.dy);
-      i.moveNext();
-      _path.lineTo(i.current.dx, i.current.dy);
-      i.moveNext();
-      _path.lineTo(i.current.dx, i.current.dy);
-    }
-    canvas.drawPath(_path, _p);
-  }
-}
+//     while (i.moveNext()) {
+//       _path.moveTo(i.current.dx, i.current.dy);
+//       i.moveNext();
+//       _path.lineTo(i.current.dx, i.current.dy);
+//       i.moveNext();
+//       _path.lineTo(i.current.dx, i.current.dy);
+//     }
+//     canvas.drawPath(_path, _p);
+//   }
+// }
