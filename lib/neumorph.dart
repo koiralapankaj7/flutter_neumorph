@@ -29,9 +29,9 @@ class Neumorph extends StatelessWidget {
   final Alignment lightSource;
   final Color color;
 
+  HSLColor get hsl => HSLColor.fromColor(this.color);
   double get lightFactor => lightnessFactor(this.color, true);
   double get darkFactor => lightnessFactor(this.color, false);
-  HSLColor get hsl => HSLColor.fromColor(this.color);
   Color get lightColor =>
       hsl.withLightness((hsl.lightness * lightFactor).clamp(0.0, 1.0)).toColor();
   Color get darkColor => hsl.withLightness((hsl.lightness * darkFactor).clamp(0.0, 1.0)).toColor();
@@ -40,16 +40,56 @@ class Neumorph extends StatelessWidget {
   Widget build(BuildContext context) {
     //
 
-    // final HSLColor hsl = HSLColor.fromColor(this.color);
+    final List<BoxShadow> pressedShadow = [
+      BoxShadow(
+        blurRadius: this.blur,
+        offset: Offset(this.distance, this.distance),
+        color: darkColor.withOpacity(this.intensity),
+      ),
+      BoxShadow(
+        blurRadius: this.blur,
+        offset: Offset(-this.distance, -this.distance),
+        color: lightColor.withOpacity(this.intensity),
+      ),
+    ];
 
-    print("Light factor : $lightFactor || Dark factor : $darkFactor");
+    final List<BoxShadow> convexShadow = [
+      BoxShadow(
+        blurRadius: this.blur,
+        offset: _getOffset(true),
+        color: lightColor.withOpacity(this.intensity),
+        // color: hsl.withLightness((hsl.lightness * 1.10).clamp(0.0, 1.0)).toColor(),
+      ),
+      BoxShadow(
+        blurRadius: this.blur,
+        offset: _getOffset(false),
+        color: darkColor.withOpacity(this.intensity),
+        // color: hsl.withLightness((hsl.lightness * 0.90).clamp(0.0, 1.0)).toColor(),
+      ),
+    ];
 
-    // final Color lightColor =
-    // hsl.withLightness((hsl.lightness * lightFactor).clamp(0.0, 1.0)).toColor();
-    // final Color darkColor =
-    //     hsl.withLightness((hsl.lightness * darkFactor).clamp(0.0, 1.0)).toColor();
+    final List<BoxShadow> defaultShadow = [
+      BoxShadow(
+        blurRadius: this.blur,
+        offset: _getOffset(true),
+        color: lightColor.withOpacity(this.intensity),
+      ),
+      BoxShadow(
+        blurRadius: this.blur,
+        offset: _getOffset(false),
+        color: darkColor.withOpacity(this.intensity),
+      ),
+    ];
 
-    var pressedDecoration = CustomisedDecoration(
+    final Decoration defaultDecoration = BoxDecoration(
+      gradient: _getColor(this.shape),
+      borderRadius: BorderRadius.circular(this.radius),
+      boxShadow: this.shape == NeumorphShape.pressed
+          ? pressedShadow
+          : this.shape == NeumorphShape.convex ? convexShadow : defaultShadow,
+    );
+
+    final Decoration pressedDecoration = CustomisedDecoration(
       colors: [
         hsl.withLightness((hsl.lightness * 1.20).clamp(0.0, 1.0)).toColor(),
         hsl.withLightness((hsl.lightness * 0.80).clamp(0.0, 1.0)).toColor(),
@@ -62,49 +102,6 @@ class Neumorph extends StatelessWidget {
       lightSource: this.lightSource,
     );
 
-    var defaultDecoration = BoxDecoration(
-      gradient: _getColor(this.shape),
-      borderRadius: BorderRadius.circular(this.radius),
-      boxShadow: this.shape == NeumorphShape.pressed
-          ? [
-              BoxShadow(
-                blurRadius: this.blur,
-                offset: Offset(this.distance, this.distance),
-                color: darkColor.withOpacity(this.intensity),
-              ),
-              BoxShadow(
-                blurRadius: this.blur,
-                offset: Offset(-this.distance, -this.distance),
-                color: lightColor.withOpacity(this.intensity),
-              ),
-            ]
-          : this.shape == NeumorphShape.convex
-              ? [
-                  BoxShadow(
-                    blurRadius: this.blur,
-                    offset: _getOffset(true),
-                    color: hsl.withLightness((hsl.lightness * 1.10).clamp(0.0, 1.0)).toColor(),
-                  ),
-                  BoxShadow(
-                    blurRadius: this.blur,
-                    offset: _getOffset(false),
-                    color: hsl.withLightness((hsl.lightness * 0.90).clamp(0.0, 1.0)).toColor(),
-                  ),
-                ]
-              : [
-                  BoxShadow(
-                    blurRadius: this.blur,
-                    offset: _getOffset(true),
-                    color: lightColor.withOpacity(this.intensity),
-                  ),
-                  BoxShadow(
-                    blurRadius: this.blur,
-                    offset: _getOffset(false),
-                    color: darkColor.withOpacity(this.intensity),
-                  ),
-                ],
-    );
-
     return Container(
       height: this.height,
       width: this.width,
@@ -114,10 +111,6 @@ class Neumorph extends StatelessWidget {
   }
 
   Gradient _getColor(NeumorphShape shape) {
-    // final HSLColor hsl = HSLColor.fromColor(this.color);
-    // final Color lightColor = hsl.withLightness((hsl.lightness * 1.20).clamp(0.0, 1.0)).toColor();
-    // final Color darkColor = hsl.withLightness((hsl.lightness * 0.90).clamp(0.0, 1.0)).toColor();
-
     switch (this.shape) {
       case NeumorphShape.flat:
         return LinearGradient(colors: [this.color, this.color]);
@@ -133,19 +126,22 @@ class Neumorph extends StatelessWidget {
         break;
       case NeumorphShape.convex:
         return LinearGradient(
-          transform: GradientRotation(45 * pi / 180),
+          transform: GradientRotation(this.lightSource.radians),
           colors: [
-            hsl.withLightness((hsl.lightness * 1.05).clamp(0.0, 1.0)).toColor(),
-            hsl.withLightness((hsl.lightness * 0.95).clamp(0.0, 1.0)).toColor(),
+            hsl
+                .withLightness((hsl.lightness * lightFactor * 0.92).clamp(0.0, 1.0))
+                .toColor()
+                .withOpacity(this.intensity),
+            hsl
+                .withLightness((hsl.lightness * darkFactor * 1.08).clamp(0.0, 1.0))
+                .toColor()
+                .withOpacity(this.intensity),
           ],
         );
         break;
       case NeumorphShape.pressed:
         return SweepGradient(
-          colors: [
-            lightColor,
-            this.color,
-          ],
+          colors: [lightColor, this.color],
           center: AlignmentDirectional(0.1, 0.1),
           stops: [0.3, 1.0],
           endAngle: pi,
